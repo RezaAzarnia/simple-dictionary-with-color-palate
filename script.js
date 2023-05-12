@@ -9,20 +9,19 @@ const wordPart = document.querySelector(".word-part")
 const playBtn = document.querySelector("#play-btn")
 const showSynonymElem = document.querySelector("#show-synonym")
 const showAntonymElem = document.querySelector("#show-antonym")
+const loader = document.querySelector(".loader")
+console.log(loader);
 
 function searchWord(e) {
     if (e.keyCode == 13) {
         console.log("fetching word");
-        console.log(e);
-
-
-
         fetchWord(searchInput.value)
     }
 }
 
 async function fetchWord(searchWord) {
     wordPart.style.display = 'none'
+    loader.style.display = "inline-block"
     await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${searchWord}`)
         .then(res => {
             console.log(res);
@@ -50,6 +49,7 @@ function showPhonetic(partOfSpeech, phonetic) {
 
 function showResponse(word) {
     wordPart.style.display = "block"
+    loader.style.display = "none"
     let vocab = word[0]
     let phonetic = vocab.meanings[0].partOfSpeech;
 
@@ -157,4 +157,4 @@ function showAntonym(word) {
     showAntonymElem.insertAdjacentHTML("beforeend", htmlCode)
 }
 searchInput.addEventListener("keyup", event => searchWord(event))
-    // window.addEventListener('load', fetchWord("hi"))
+window.addEventListener('load', fetchWord("hi"))
