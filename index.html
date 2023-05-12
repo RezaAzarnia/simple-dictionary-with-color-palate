@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dictionary </title>
+    <link rel="stylesheet" href=" https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <section class="main-section">
+        <div class="container">
+            <div class="form-part">
+                <div class="row-top">
+                    <div class="search-part">
+                        <input type="text" placeholder="enter the word" id="search-input">
+                    </div>
+                    <div class="serach-button">
+                        <button id="search-btn">search</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="word-part">
+                <div class="row-down">
+                    <div class="show-verb">
+                        <h1 id="show-word"></h1>
+                        <div class="">
+                            <span id="show-phonetic"></span>
+                        </div>
+                    </div>
+                    <div class="voice-part">
+                        <i class="fa fa-volume-up" aria-hidden="true" id="play-btn"></i>
+                        <audio src=""></audio>
+                    </div>
+                </div>
+                <div class="synonym-part">
+                    <span style="text-transform: capitalize;font-weight: 600;font-size: 0.875rem;"> synonyms are :</span>
+                    <span id="show-synonym"> </span>
+                </div>
+
+                <div class="antonym-part">
+                    <span style="text-transform: capitalize;font-weight: 600;font-size: 0.875rem;"> antonyms are :</span>
+                    <span id="show-antonym"> </span>
+                </div>
+
+
+                <div class="description-part">
+                    <p id="show-decription">
+
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <script src="./script.js"></script>
+</body>
+
+
+</html>
