@@ -1,160 +1,200 @@
-"use strict"
+"use strict";
 
-const searchInput = document.querySelector("#search-input")
-const showWord = document.querySelector("#show-word")
-const showPhoneticElem = document.querySelector("#show-phonetic")
-const audioElem = document.querySelector("audio")
-const showDescription = document.querySelector("#show-decription")
-const wordPart = document.querySelector(".word-part")
-const playBtn = document.querySelector("#play-btn")
-const showSynonymElem = document.querySelector("#show-synonym")
-const showAntonymElem = document.querySelector("#show-antonym")
-const loader = document.querySelector(".loader")
-console.log(loader);
+const searchInput = document.querySelector("#search-input");
+const showSearchedVocabulary = document.querySelector("#show-word");
+const showPhoneticElem = document.querySelector("#show-phonetic");
+const audioElem = document.querySelector("audio");
+const showDescription = document.querySelector("#show-decription");
+const wordPart = document.querySelector(".word-part");
+const playBtn = document.querySelector("#play-btn");
+const showSynonymElem = document.querySelector("#show-synonym");
+const showAntonymElem = document.querySelector("#show-antonym");
+const loader = document.querySelector(".loader");
+const searchBtn = document.querySelector("#search-btn");
+const alertElement = document.querySelector(".alert-container");
+let checkUserInternet = false;
 
-function searchWord(e) {
-    if (e.keyCode == 13) {
-        console.log("fetching word");
-        fetchWord(searchInput.value)
+async function fetchWord(searchWord) {
+    wordPart.style.display = "none";
+    loader.style.display = "inline-block";
+
+    await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${searchWord}`)
+        .then(checkError)
+        .then((word) => {
+            showResponse(word);
+        })
+        .catch(() => {
+            loader.style.display = "none";
+            alertHandler("can't find this word!!!");
+        });
+}
+
+function checkError(response) {
+    if (response.status == 200 && response.status <= 299) {
+        return response.json();
+    } else {
+        throw Error(response.status);
     }
 }
 
-async function fetchWord(searchWord) {
-    wordPart.style.display = 'none'
-    loader.style.display = "inline-block"
-    await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${searchWord}`)
-        .then(res => {
-            console.log(res);
-            if (res.status == 200) {
-                return res.json()
-            } else if (res.status == 404) {
-                return false
-            }
-        })
-        .then(word => {
-            console.log(word);
-            showResponse(word)
-        }).catch(err => {
-            console.log(err);
+function alertHandler(errorText) {
+    alertElement.children[1].innerHTML = errorText;
+    alertElement.classList.add("active");
+    setTimeout(() => {
+        alertElement.classList.remove("active");
+    }, 5000);
 
-            // alert("can't find this word")
-        })
-
-}
-
-function showPhonetic(partOfSpeech, phonetic) {
-    showPhoneticElem.innerHTML = `${partOfSpeech}  ${phonetic}`
-
+    alertElement.children[0].onclick = () => {
+        alertElement.classList.remove("active");
+    };
 }
 
 function showResponse(word) {
-    wordPart.style.display = "block"
-    loader.style.display = "none"
-    let vocab = word[0]
-    let phonetic = vocab.meanings[0].partOfSpeech;
+    let vocab = word[0];
 
-    showWord.innerHTML = vocab.word
-    voiceHandler(vocab)
+    wordPart.style.display = "block";
+    loader.style.display = "none";
 
-    if (vocab.phonetic == undefined) {
-        let findPhonetic = vocab.phonetics.find(item => {
-            return item.text
-        })
+    showSearchedVocabulary.innerHTML = vocab.word;
 
-        if (findPhonetic == undefined) {
-            showPhonetic(phonetic, "")
-            return false
+    phoneticHandler(vocab);
+    showSynonym(vocab);
+    showAntonym(vocab);
+    voiceHandler(vocab);
+    showDescription.innerHTML = vocab.meanings[0].definitions[0].definition;
+}
+
+function phoneticHandler(word) {
+    let phonetic = word.meanings[0].partOfSpeech;
+
+    //if don't find the phonetic
+    if (!word.phonetic) {
+        let findPhonetic = word.phonetics.find((item) => {
+            return item.text;
+        });
+
+        if (!findPhonetic) {
+            showPhonetic(phonetic, "");
+            return false;
+        } else {
+            showPhonetic(phonetic, findPhonetic.text);
         }
-
-        showPhonetic(phonetic, findPhonetic.text)
-
     } else {
-        showPhonetic(phonetic, vocab.phonetic)
+        showPhonetic(phonetic, word.phonetic);
     }
+}
 
-    showDescription.innerHTML = vocab.meanings[0].definitions[0].definition
-    showSynonym(vocab)
-    showAntonym(vocab)
-
+function showPhonetic(partOfSpeech, phonetic) {
+    showPhoneticElem.innerHTML = `${partOfSpeech}  ${phonetic}`;
 }
 
 function voiceHandler(word) {
-    let findVoice = word.phonetics.find(item => {
-        return item.audio
-    })
-    audioElem.src = findVoice.audio
-    playBtn.onclick = () => {
-        audioElem.play()
+    let findVoice = word.phonetics.find((item) => {
+        return item.audio;
+    });
+    if (!findVoice) {
+        console.log("not found voice");
+        alertHandler("unfortunately this word don't have voice")
+        return false;
     }
+    audioElem.src = findVoice.audio;
+    playBtn.onclick = () => {
+        audioElem.play();
+    };
 }
-
 
 function showSynonym(word) {
-    let synonymArray = []
-    let filterSynonyms = word.meanings.filter(item => {
-        return item.synonyms.length > 0
-    })
+    let synonymArray = [];
+    let filterSynonyms = word.meanings.filter((item) => {
+        return item.synonyms.length > 0;
+    });
 
     if (filterSynonyms.length != 0) {
-
-        let findSynonyms = filterSynonyms.find(item => {
-            return item.synonyms
-        })
-        synonymArray = findSynonyms.synonyms
-
+        let findSynonyms = filterSynonyms.find((item) => {
+            return item.synonyms;
+        });
+        synonymArray = findSynonyms.synonyms;
     } else {
-        showSynonymElem.parentElement.style.display = "none"
-        return false
+        showSynonymElem.parentElement.style.display = "none";
+        return false;
     }
 
-    showSynonymElem.parentElement.style.display = "block"
+    showSynonymElem.parentElement.style.display = "inline-flex";
 
     if (synonymArray.length > 4) {
-        synonymArray = synonymArray.slice(0, 4)
+        synonymArray = synonymArray.slice(0, 4);
     }
 
-    showSynonymElem.innerHTML = ""
-    let htmlCode = ""
-    synonymArray.forEach(item => {
-        htmlCode += `${item} - `
-    })
-    showSynonymElem.insertAdjacentHTML("beforeend", htmlCode)
-
+    showSynonymElem.innerHTML = "";
+    let htmlCode = "";
+    synonymArray.forEach((item) => {
+        htmlCode += `${item} - `;
+    });
+    showSynonymElem.insertAdjacentHTML("beforeend", htmlCode);
 }
-
-
-
 
 function showAntonym(word) {
-    let antonymsArray = []
-    let filterAntonyms = word.meanings.filter(item => {
-        return item.antonyms.length > 0
-    })
+    let antonymsArray = [];
+    let filterAntonyms = word.meanings.filter((item) => {
+        return item.antonyms.length > 0;
+    });
 
     if (filterAntonyms.length != 0) {
-
-        let findAntonyms = filterAntonyms.find(item => {
-            return item.antonyms
-        })
-        antonymsArray = findAntonyms.antonyms
-
+        let findAntonyms = filterAntonyms.find((item) => {
+            return item.antonyms;
+        });
+        antonymsArray = findAntonyms.antonyms;
     } else {
-        showAntonymElem.parentElement.style.display = "none"
-        return false
+        showAntonymElem.parentElement.style.display = "none";
+        return false;
     }
 
-    showAntonymElem.parentElement.style.display = "block"
+    showAntonymElem.parentElement.style.display = "inline-flex";
 
     if (antonymsArray.length > 4) {
-        antonymsArray = antonymsArray.slice(0, 4)
+        antonymsArray = antonymsArray.slice(0, 4);
     }
 
-    showAntonymElem.innerHTML = ""
-    let htmlCode = ""
-    antonymsArray.forEach(item => {
-        htmlCode += `${item} - `
-    })
-    showAntonymElem.insertAdjacentHTML("beforeend", htmlCode)
+    showAntonymElem.innerHTML = "";
+    let htmlCode = "";
+    antonymsArray.forEach((item) => {
+        htmlCode += `${item} - `;
+    });
+    showAntonymElem.insertAdjacentHTML("beforeend", htmlCode);
 }
-searchInput.addEventListener("keyup", event => searchWord(event))
-window.addEventListener('load', fetchWord("hi"))
+
+document.addEventListener("DOMContentLoaded", function() {
+    navigator.onLine ? (checkUserInternet = true) : (checkUserInternet = false);
+});
+
+navigator.connection.onchange = () => {
+    console.log('change net');
+    navigator.onLine ? (checkUserInternet = true) : (checkUserInternet = false);
+}
+
+searchInput.addEventListener("keyup", (event) => {
+    if (event.keyCode == 13) {
+        if (!checkUserInternet) {
+            alertHandler("you are not online!");
+            return false;
+        }
+        if (searchInput.value == "") {
+            alertHandler("enter your word plz!");
+            return false;
+        }
+        fetchWord(searchInput.value)
+    }
+});
+
+
+searchBtn.addEventListener("click", () => {
+    if (!checkUserInternet) {
+        alertHandler("you are not online!");
+        return false;
+    }
+    if (searchInput.value == "") {
+        alertHandler("enter your word plz!");
+        return false;
+    }
+    fetchWord(searchInput.value)
+});

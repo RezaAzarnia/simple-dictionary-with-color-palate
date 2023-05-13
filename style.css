@@ -16,6 +16,38 @@ body {
     background-color: var(--main-color);
 }
 
+.alert-container {
+    max-width: 263px;
+    padding: 20px;
+    position: absolute;
+    right: 0;
+    top: -50%;
+    left: 0;
+    margin: 7px auto;
+    border-radius: 5px;
+    background: #fa8b87;
+    transition: all 0.5s ease;
+}
+
+.alert-container.active {
+    top: 0;
+}
+
+.alert-container .delete {
+    position: absolute;
+    top: 1px;
+    right: 7px;
+    color: var(--white-color);
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.alert-container p {
+    color: #fff;
+    text-transform: capitalize;
+    text-align: center;
+}
+
 .main-section {
     height: 100vh;
     display: flex;
@@ -103,6 +135,15 @@ body {
     font-size: 0.875rem;
 }
 
+.row-textPart {
+    display: flex;
+    flex-direction: column;
+}
+
+.row-textPart .space {
+    margin: 5px 0;
+}
+
 .synonym-part {
     padding-left: 5px;
 }
@@ -111,9 +152,12 @@ body {
     padding-left: 5px;
 }
 
+.description-part {
+    padding: 0 0 0 5px;
+}
+
 .description-part p {
     text-align: justify;
-    padding: 0 0px 0 5px;
 }
 
 .lds-ellipsis {

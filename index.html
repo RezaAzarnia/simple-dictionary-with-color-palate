@@ -11,6 +11,14 @@
 </head>
 
 <body>
+
+    <div class="alert-container">
+        <div class="delete">
+            &#x2715
+        </div>
+        <p>can't find this word</p>
+    </div>
+
     <section class="main-section">
         <div class="container">
             <div class="form-part">
@@ -42,23 +50,24 @@
                         <audio src=""></audio>
                     </div>
                 </div>
-                <div class="synonym-part">
-                    <span style="text-transform: capitalize;font-weight: 600;font-size: 0.875rem;"> synonyms are :</span>
-                    <span id="show-synonym"> </span>
+                <div class="row-textPart">
+                    <div class="synonym-part space">
+                        <h4> synonyms are :</h4>
+                        <span id="show-synonym"> </span>
+                    </div>
+
+                    <div class="antonym-part space">
+                        <h4> antonyms are :</h4>
+                        <span id="show-antonym"> </span>
+                    </div>
+
+                    <div class="description-part space">
+                        <h4> Description is :</h4>
+                        <p id="show-decription">
+
+                        </p>
+                    </div>
                 </div>
-
-                <div class="antonym-part">
-                    <span style="text-transform: capitalize;font-weight: 600;font-size: 0.875rem;"> antonyms are :</span>
-                    <span id="show-antonym"> </span>
-                </div>
-
-
-                <div class="description-part">
-                    <p id="show-decription">
-
-                    </p>
-                </div>
-
             </div>
         </div>
     </section>
