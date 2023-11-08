@@ -1,79 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>dictionary</title>
+    <link
+      rel="stylesheet"
+      href=" https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>dictionary </title>
-    <link rel="stylesheet" href=" https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="./style.css">
-</head>
-
-<body>
-
-    <div class="alert-container">
-        <div class="delete">
-            &#x2715
-        </div>
-        <p>can't find this word</p>
-    </div>
+  <body>
+    <div class="alert-container"></div>
 
     <section class="main-section">
-        <div class="container">
-            <div class="form-part">
-                <div class="row-top">
-                    <div class="search-part">
-                        <input type="text" placeholder="enter the word" id="search-input">
-                    </div>
-                    <div class="serach-button">
-                        <button id="search-btn">search</button>
-                    </div>
-                </div>
+      <div class="container">
+        <div class="form-part">
+          <div class="row-top">
+            <div class="search-part">
+              <input
+                type="text"
+                placeholder="enter the word"
+                id="search-input"
+              />
             </div>
-            <div class="lds-ellipsis loader">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
+            <div class="serach-button">
+              <button id="search-btn">search</button>
             </div>
-            <div class="word-part">
-                <div class="row-down">
-                    <div class="show-verb">
-                        <h1 id="show-word"></h1>
-                        <div class="">
-                            <span id="show-phonetic"></span>
-                        </div>
-                    </div>
-                    <div class="voice-part">
-                        <i class="fa fa-volume-up" aria-hidden="true" id="play-btn"></i>
-                        <audio src=""></audio>
-                    </div>
-                </div>
-                <div class="row-textPart">
-                    <div class="synonym-part space">
-                        <h4> synonyms are :</h4>
-                        <span id="show-synonym"> </span>
-                    </div>
-
-                    <div class="antonym-part space">
-                        <h4> antonyms are :</h4>
-                        <span id="show-antonym"> </span>
-                    </div>
-
-                    <div class="description-part space">
-                        <h4> Description is :</h4>
-                        <p id="show-decription">
-
-                        </p>
-                    </div>
-                </div>
-            </div>
+          </div>
         </div>
+        <!-- start loader part -->
+        <div class="lds-ellipsis loader">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+        <!-- finish loader part -->
+        
+        <div class="word-part">
+          <div class="row-down">
+            <div class="show-verb">
+              <h1 id="show-word"></h1>
+              <div class="">
+                <span id="show-phonetic"></span>
+              </div>
+            </div>
+            <div class="voice-part">
+              <i class="fa fa-volume-up" aria-hidden="true" id="play-btn"></i>
+              <audio src=""></audio>
+            </div>
+          </div>
+          <div class="row-textPart">
+            <div class="synonym-part space">
+              <h4>synonyms are :</h4>
+              <ul id="show-synonym"> </ul>
+            </div>
+
+            <div class="antonym-part space">
+              <h4>antonyms are :</h4>
+              <ul id="show-antonym"> </ul>
+            </div>
+
+            <div class="description-part space">
+              <h4>Description is :</h4>
+              <p id="show-decription"></p>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <script src="./script.js"></script>
-</body>
-
-
+  </body>
 </html>
