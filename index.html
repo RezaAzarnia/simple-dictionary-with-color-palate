@@ -9,7 +9,7 @@
       rel="stylesheet"
       href=" https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <link rel="stylesheet" href="./style.css" />
+    <link rel="stylesheet" href="./styles/style2.css" />
   </head>
 
   <body>
@@ -17,20 +17,17 @@
 
     <section class="main-section">
       <div class="container">
+        <div class="color-palate"></div>
+        <!-- start input and button part -->
         <div class="form-part">
-          <div class="row-top">
-            <div class="search-part">
-              <input
-                type="text"
-                placeholder="enter the word"
-                id="search-input"
-              />
-            </div>
+          <div class="search-part">
+            <input type="text" placeholder="enter the word" id="search-input" />
             <div class="serach-button">
               <button id="search-btn">search</button>
             </div>
           </div>
         </div>
+        <!-- finish input and button part -->
         <!-- start loader part -->
         <div class="lds-ellipsis loader">
           <div></div>
@@ -39,40 +36,40 @@
           <div></div>
         </div>
         <!-- finish loader part -->
-        
-        <div class="word-part">
-          <div class="row-down">
-            <div class="show-verb">
+        <!-- start word part -->
+        <div class="word-details-part">
+          <div class="word-details-top-part">
+            <div class="main-word">
               <h1 id="show-word"></h1>
               <div class="">
                 <span id="show-phonetic"></span>
               </div>
             </div>
-            <div class="voice-part">
+            <div class="word-detail-right-part">
               <i class="fa fa-volume-up" aria-hidden="true" id="play-btn"></i>
               <audio src=""></audio>
             </div>
           </div>
-          <div class="row-textPart">
-            <div class="synonym-part space">
+          <div class="word-details-down-part">
+            <div class="synonym-part">
               <h4>synonyms are :</h4>
-              <ul id="show-synonym"> </ul>
+              <ul id="show-synonym"></ul>
             </div>
 
-            <div class="antonym-part space">
+            <div class="antonym-part">
               <h4>antonyms are :</h4>
-              <ul id="show-antonym"> </ul>
+              <ul id="show-antonym"></ul>
             </div>
 
-            <div class="description-part space">
+            <div class="description-part">
               <h4>Description is :</h4>
               <p id="show-decription"></p>
             </div>
           </div>
         </div>
+        <!-- finish word part -->
       </div>
     </section>
-
-    <script src="./script.js"></script>
+    <script src="./script.js" type="module"></script>
   </body>
 </html>

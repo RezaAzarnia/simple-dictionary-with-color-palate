@@ -1,20 +1,38 @@
 "use strict";
+import colors from "./colors.js";
 
 const searchInput = document.querySelector("#search-input");
 const showSearchedWord = document.querySelector("#show-word");
 const showPhoneticElem = document.querySelector("#show-phonetic");
 const audioElem = document.querySelector("audio");
 const showDescription = document.querySelector("#show-decription");
-const wordPart = document.querySelector(".word-part");
+const wordPart = document.querySelector(".word-details-part");
 const playBtn = document.querySelector("#play-btn");
 const showSynonymElem = document.querySelector("#show-synonym");
 const showAntonymElem = document.querySelector("#show-antonym");
 const loader = document.querySelector(".loader");
 const searchBtn = document.querySelector("#search-btn");
 const alertElement = document.querySelector(".alert-container");
-let checkUserInternet = false;
+const colorIcons = document.querySelectorAll(".color");
+const root = document.querySelector(":root");
+const colorsContainer = document.querySelector(".color-palate");
+let isUserOnline = true;
 
-// fetching word and error handling
+//handling colors
+const handleColorsPalate = () => {
+  colors.forEach((color) => {
+    let colorElem = document.createElement("div");
+    colorElem.setAttribute("title", "change color");
+    colorElem.classList.add("color");
+    colorElem.style.backgroundColor = `var(--${color.colorCode})`;
+    colorsContainer.append(colorElem);
+
+    colorElem.addEventListener("click", () => {
+      root.style.setProperty("--mainColor", `var(--${color.colorCode})`);
+      root.style.setProperty("--hoverColor", color.hoverColor);
+    });
+  });
+};
 const fetchWord = async (searchWord) => {
   wordPart.style.display = "none";
   loader.style.display = "inline-block";
@@ -35,36 +53,44 @@ const fetchWord = async (searchWord) => {
     }
   }
 };
+const submitInput = () => {
+  searchInput.value = searchInput.value.trim();
+
+  if (!isUserOnline) {
+    alertHandler("you are not online!");
+    return false;
+  }
+  if (searchInput.value === "") {
+    alertHandler("enter your word pease!");
+    return false;
+  }
+  fetchWord(searchInput.value.toLowerCase());
+};
 const alertHandler = (errorText) => {
-    alertElement.classList.add("active");
+  alertElement.innerHTML = "";
+  alertElement.classList.add("active");
   let alertHtmlCode = `
-  <div class="delete">
-     &#x2715
-   </div>
+  <div class="close-icon">&#x2715</div>
    <p>${errorText}</p>
   `;
   alertElement.insertAdjacentHTML("beforeend", alertHtmlCode);
+
   setTimeout(() => alertElement.classList.remove("active"), 3000);
 };
-
 const showWordDetails = (response) => {
+  let vocab = response[0];
+  wordPart.style.display = "block";
+  loader.style.display = "none";
 
-  let vocab = word[0];
+  showSearchedWord.innerHTML = vocab.word;
 
-    wordPart.style.display = "block";
-    loader.style.display = "none";
-
-    showSearchedVocabulary.innerHTML = vocab.word;
-
-    phoneticHandler(vocab);
-    showSynonym(vocab);
-    showAntonym(vocab);
-    voiceHandler(vocab);
-    showDescription.innerHTML = vocab.meanings[0].definitions[0].definition;
-
+  phoneticHandler(vocab);
+  showSynonym(vocab);
+  showAntonym(vocab);
+  voiceHandler(vocab);
+  showDescription.innerHTML = vocab.meanings[0].definitions[0].definition;
 };
-
-function phoneticHandler(word) {
+const phoneticHandler = (word) => {
   let phonetic = word.meanings[0].partOfSpeech;
 
   //if don't find the phonetic
@@ -82,119 +108,84 @@ function phoneticHandler(word) {
   } else {
     showPhonetic(phonetic, word.phonetic);
   }
-}
-
-function showPhonetic(partOfSpeech, phonetic) {
+};
+const showPhonetic = (partOfSpeech, phonetic) => {
   showPhoneticElem.innerHTML = `${partOfSpeech}  ${phonetic}`;
-}
-
-function voiceHandler(word) {
-  let findVoice = word.phonetics.find((item) => {
+};
+const voiceHandler = (word) => {
+  let wordAudio = word.phonetics.find((item) => {
     return item.audio;
   });
-  if (!findVoice) {
-    console.log("not found voice");
-    alertHandler("unfortunately this word don't have voice");
+  playBtn.classList.replace("fa-volume-mute", "fa-volume-up");
+  playBtn.classList.remove("diActive");
+
+  if (!wordAudio) {
+    playBtn.classList.replace("fa-volume-up", "fa-volume-mute");
+    playBtn.classList.add("diActive");
+
     return false;
   }
-  audioElem.src = findVoice.audio;
+
+  audioElem.src = wordAudio.audio;
   playBtn.onclick = () => {
     audioElem.play();
   };
-}
+};
+const createLiElem = (container, array) => {
+  let htmlItems = "";
+  container.innerHTML = "";
 
-function showSynonym(word) {
+  array.forEach((item) => {
+    htmlItems += `<li> ${item}</li>`;
+  });
+  container.insertAdjacentHTML("beforeend", htmlItems);
+};
+const showSynonym = (word) => {
   let synonymArray = [];
-  let filterSynonyms = word.meanings.filter((item) => {
+  const filterSynonyms = word.meanings.filter((item) => {
     return item.synonyms.length > 0;
   });
 
-  if (filterSynonyms.length != 0) {
-    let findSynonyms = filterSynonyms.find((item) => {
+  if (filterSynonyms.length) {
+    const findSynonyms = filterSynonyms.find((item) => {
       return item.synonyms;
     });
     synonymArray = findSynonyms.synonyms;
   } else {
-    showSynonymElem.parentElement.style.display = "none";
+    showSynonymElem.innerHTML = "-";
     return false;
   }
-
-  showSynonymElem.parentElement.style.display = "inline-flex";
 
   if (synonymArray.length > 4) {
     synonymArray = synonymArray.slice(0, 4);
   }
-
-  showSynonymElem.innerHTML = "";
-  let htmlCode = "";
-  synonymArray.forEach((item) => {
-    htmlCode += `<li> ${item}</li>
-     `;
-  });
-  showSynonymElem.insertAdjacentHTML("beforeend", htmlCode);
-}
-
-function showAntonym(word) {
+  createLiElem(showSynonymElem, synonymArray);
+};
+const showAntonym = (word) => {
   let antonymsArray = [];
-  let filterAntonyms = word.meanings.filter((item) => {
+  const filterAntonyms = word.meanings.filter((item) => {
     return item.antonyms.length > 0;
   });
 
-  if (filterAntonyms.length != 0) {
+  if (filterAntonyms.length) {
     let findAntonyms = filterAntonyms.find((item) => {
       return item.antonyms;
     });
     antonymsArray = findAntonyms.antonyms;
   } else {
-    showAntonymElem.parentElement.style.display = "none";
+    showAntonymElem.innerHTML = "-";
     return false;
   }
-
-  showAntonymElem.parentElement.style.display = "inline-flex";
 
   if (antonymsArray.length > 4) {
     antonymsArray = antonymsArray.slice(0, 4);
   }
-
-  showAntonymElem.innerHTML = "";
-  let htmlCode = "";
-  antonymsArray.forEach((item) => {
-    htmlCode += `<li>${item}</li>`;
-  });
-  showAntonymElem.insertAdjacentHTML("beforeend", htmlCode);
-}
-
-document.addEventListener("DOMContentLoaded", function () {
-  navigator.onLine ? (checkUserInternet = true) : (checkUserInternet = false);
-});
-
-navigator.connection.onchange = () => {
-  console.log("change net");
-  navigator.onLine ? (checkUserInternet = true) : (checkUserInternet = false);
+  createLiElem(showAntonymElem, antonymsArray);
 };
 
-searchInput.addEventListener("keyup", (event) => {
-  if (event.keyCode == 13) {
-    if (!checkUserInternet) {
-      alertHandler("you are not online!");
-      return false;
-    }
-    if (searchInput.value == "") {
-      alertHandler("enter your word plz!");
-      return false;
-    }
-    fetchWord(searchInput.value);
-  }
-});
-
-searchBtn.addEventListener("click", () => {
-  if (!checkUserInternet) {
-    alertHandler("you are not online!");
-    return false;
-  }
-  if (searchInput.value == "") {
-    alertHandler("enter your word plz!");
-    return false;
-  }
-  fetchWord(searchInput.value);
-});
+const checkUserNet = () => (isUserOnline = navigator.onLine);
+document.addEventListener("DOMContentLoaded", checkUserNet);
+navigator.connection.addEventListener("change", checkUserNet);
+searchBtn.addEventListener("click", submitInput);
+searchInput.addEventListener("keyup", (e) => e.keyCode === 13 && submitInput());
+handleColorsPalate()

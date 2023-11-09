@@ -1,0 +1,21 @@
+@mixin flex() {
+  display: flex;
+  align-items: center;
+}
+@mixin hover() {
+  &:hover {
+    @content;
+  }
+}
+
+@mixin scaleAnimationHandler($animationName, $scale1, $scale2) {
+  @keyframes #{$animationName} {
+    0% {
+      transform: scale($scale1);
+    }
+    100% {
+      transform: scale($scale2);
+    }
+  }
+}
+

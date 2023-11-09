@@ -1,0 +1,17 @@
+:root {
+  --mainColor: var(--darkgreen);
+  --white: #fff;
+  --dark: #000;
+  --danger: #dc3545;
+  --gray: #808080bd;
+  --darkgreen: #016a70;
+  --orange: #f86f03;
+  --blue: #00a9ff;
+  --chocolate: #430e18;
+  --darkPurple: #3a2b50;
+  --navy: #061831;
+  --richBlack: #18181a;
+  --MarianBlue: #384589;
+  --hoverColor: #00b3b8;
+  --fontSmall: 0.875rem;
+}
